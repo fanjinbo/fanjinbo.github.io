@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  
+  <title>Spring实战读书笔记 | hhfan的博客 | 分享知识</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="">
+  <meta name="description" content="Spring的策略
+基于POJO的轻量级和最小侵入性编程
+通过依赖注入和面向接口实现松耦合
+基于切面和惯例进行声明式编程
+通过切面和模板减少样板式代码
+
+Spring竭力避免因自身的API而弄乱你的应用代码，不会强迫你实现Spring规范的接口或者接成Spring规范的类。使用Spring通常从代码层不会表现出任何你使用了Spring框架这件事情。最坏的场景是一个类或许会使用Spring的注解，但">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring实战读书笔记">
+<meta property="og:url" content="http://fanjinbo.github.io/2016/11/25/Spring实战读书笔记/index.html">
+<meta property="og:site_name" content="hhfan的博客">
+<meta property="og:description" content="Spring的策略
+基于POJO的轻量级和最小侵入性编程
+通过依赖注入和面向接口实现松耦合
+基于切面和惯例进行声明式编程
+通过切面和模板减少样板式代码
+
+Spring竭力避免因自身的API而弄乱你的应用代码，不会强迫你实现Spring规范的接口或者接成Spring规范的类。使用Spring通常从代码层不会表现出任何你使用了Spring框架这件事情。最坏的场景是一个类或许会使用Spring的注解，但">
+<meta property="og:updated_time" content="2016-11-25T09:21:13.296Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring实战读书笔记">
+<meta name="twitter:description" content="Spring的策略
+基于POJO的轻量级和最小侵入性编程
+通过依赖注入和面向接口实现松耦合
+基于切面和惯例进行声明式编程
+通过切面和模板减少样板式代码
+
+Spring竭力避免因自身的API而弄乱你的应用代码，不会强迫你实现Spring规范的接口或者接成Spring规范的类。使用Spring通常从代码层不会表现出任何你使用了Spring框架这件事情。最坏的场景是一个类或许会使用Spring的注解，但">
+  
+    <link rel="alternative" href="/atom.xml" title="hhfan的博客" type="application/atom+xml">
+  
+  <meta name="summary" content="分享、探讨">
+  <link rel="shortcut icon" href="/img/tx.png">
+  <link rel="stylesheet" href="/css/style.css?v=1.1.12">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/tx.png">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">fanjinbo</h5>
+          <a href="mailto:fanjinbo1991@gmail.com" title="fanjinbo1991@gmail.com" class="mail">fanjinbo1991@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/fanjinbo" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/1615562162" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                新浪微博
+              </a>
+            </li>
+        
+      </ul>
+
+      <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>hhfan的博客 &copy; 2016</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260844138'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1260844138' type='text/javascript'%3E%3C/script%3E"));</script>
+</footer>
+
+    </div>
+  </div>
+</aside>
+
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Spring实战读书笔记</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container">
+        <h1 class="title">Spring实战读书笔记</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-11-25T08:01:40.000Z" itemprop="datePublished" class="page-time">
+  2016-11-25
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Spring的策略"><span class="post-toc-number">1.</span> <span class="post-toc-text">Spring的策略</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#自动装配Bean属性（Page-65）"><span class="post-toc-number">2.</span> <span class="post-toc-text">自动装配Bean属性（Page.65）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#byName"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">byName</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#byType"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">byType</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#consructor自动装配"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">consructor自动装配</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#最佳自动装配"><span class="post-toc-number">2.0.4.</span> <span class="post-toc-text">最佳自动装配</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#默认自动装配"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">默认自动装配</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#混合装配"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">混合装配</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用注解装配"><span class="post-toc-number">3.</span> <span class="post-toc-text">使用注解装配</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Qualifier"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">@Qualifier</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#自定义-Qualifier"><span class="post-toc-number">3.0.2.</span> <span class="post-toc-text">自定义@Qualifier</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Bean"><span class="post-toc-number">3.0.3.</span> <span class="post-toc-text">@Bean</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#面向切面的Spring"><span class="post-toc-number">4.</span> <span class="post-toc-text">面向切面的Spring</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-Spring实战读书笔记" 
+  class="post-article article-type-post" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Spring实战读书笔记</h1>
+        <div class="post-meta">
+            <time datetime="2016-11-25T08:01:40.000Z" itemprop="datePublished" class="post-time">
+  2016-11-25
+</time>
+
+            
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="Spring的策略"><a href="#Spring的策略" class="headerlink" title="Spring的策略"></a>Spring的策略</h2><ul>
+<li>基于POJO的轻量级和最小侵入性编程</li>
+<li>通过依赖注入和面向接口实现松耦合</li>
+<li>基于切面和惯例进行声明式编程</li>
+<li>通过切面和模板减少样板式代码</li>
+</ul>
+<p>Spring竭力避免因自身的API而弄乱你的应用代码，不会强迫你实现Spring规范的接口或者接成Spring规范的类。使用Spring通常从代码层不会表现出任何你使用了Spring框架这件事情。最坏的场景是一个类或许会使用Spring的注解，但是它依旧是POJO。<br>– public class BraveKnight implements</p>
+<h2 id="自动装配Bean属性（Page-65）"><a href="#自动装配Bean属性（Page-65）" class="headerlink" title="自动装配Bean属性（Page.65）"></a>自动装配Bean属性（Page.65）</h2><h4 id="byName"><a href="#byName" class="headerlink" title="byName"></a>byName</h4><p>配置<bean>元素autowire=”byName”<br>把与Bean属性具有相同名字（或者id）的其他Bean自动装配到Bean的对应属性中去。</bean></p>
+<h4 id="byType"><a href="#byType" class="headerlink" title="byType"></a>byType</h4><p>配置<bean>元素autowire=”byType”<br>把与Bean属性具有相同类型的其他Bean自动装配到Bean的对应属性中去。.<br>Tips：byType装配有一个局限性就是如果有Spring找到多个Bean的类型与待装配的Bean的属性的类型一致的话，Spring会抛出异常。为了避免这种异常，Spring提供了两种选择：</bean></p>
+<ol>
+<li>为自动装配标识一个首选的Bean，可以使用<bean>元素的primary属性，设置唯一一个首选的Bean的primary为true，其他的都要设置为false。primary的默认属性就是true。</bean></li>
+<li>排除某些Bean。将想要排除的Bean的autowire-candidate属性设置为false。</li>
+</ol>
+<h4 id="consructor自动装配"><a href="#consructor自动装配" class="headerlink" title="consructor自动装配"></a>consructor自动装配</h4><p>配置<bean>元素autowire=”constructor”，移除<constructor-arg>配置。<br>Spring将会自动搜寻与这个Bean某一个构造函数入参类型相同的Bean来自动装配，将找到的Bean作为入参传入。<br>但是如果匹配到多个Bean或者有多个构造函数都满足匹配的话Spring不会去处理这些问题（待具体代码测试，书上也没有写清楚）。</constructor-arg></bean></p>
+<h4 id="最佳自动装配"><a href="#最佳自动装配" class="headerlink" title="最佳自动装配"></a>最佳自动装配</h4><p>配置<bean>元素autowire=”autodetect”<br>Spring会首先尝使用constructor自动装配，如果没有匹配到的话就用byType来自动装配。</bean></p>
+<h3 id="默认自动装配"><a href="#默认自动装配" class="headerlink" title="默认自动装配"></a>默认自动装配</h3><p>在<beans>上增加一个default-autowire属性。默认是没有此项属性的。单独的<bean>上可以再次设置装配规则来覆盖全局属性。</bean></beans></p>
+<h3 id="混合装配"><a href="#混合装配" class="headerlink" title="混合装配"></a>混合装配</h3><p>可以使用手动配置属性装配来覆盖自动装配。<br>优先级依次为<br>手动装配–&gt; 自动装配 –&gt;全局自动装配</p>
+<h2 id="使用注解装配"><a href="#使用注解装配" class="headerlink" title="使用注解装配"></a>使用注解装配</h2><p>###@Autowired<br>进行byType的自动装配<br>可以用如下几种方法来进行标记：</p>
+<ol>
+<li>不限于setter方法，还可以自动装配Bean的任何方法。</li>
+<li>构造器方法。</li>
+<li>标注属性，并删除setter方法。对private属性也可以标注。</li>
+</ol>
+<p>使用@Autowired装配需要主要的是。如果对标注的属性或者参数没有找到可以装配的Bean将会抛出NoSuchBeanDefinitionException。或者设置<br><code>@Autowired(required=false)</code><br>如果找不到对应的Bean，则将属性设置为null。<br>tips：标注多个构造器的时候会优先选择入参匹配到最多的构造器方法。</p>
+<h4 id="Qualifier"><a href="#Qualifier" class="headerlink" title="@Qualifier"></a>@Qualifier</h4><p>如果装配过程中遇到了多个Bean符合的情况就会抛出异常，不过Spring提供了@Qualifier这个标注来处理这种情况。使用@Qualifier(“beanId”)，可以在装配过程中优先选择Bean id为”beanId“的Bean来进行装配。还可以指定某个Bean的<bean>中的<qualifier>元素为某个别名，这样@Qualifier也可以配置为这个别名。<br>例如：<br><code>&lt;bean class=&quot;XXX&quot;&gt;
+  &lt;qualifier value=&quot;namex&quot;&gt;
+&lt;/bean&gt;
+@Autowired
+@Qulifier(&quot;namex&quot;)</code></qualifier></bean></p>
+<h4 id="自定义-Qualifier"><a href="#自定义-Qualifier" class="headerlink" title="自定义@Qualifier"></a>自定义@Qualifier</h4><p>直接贴代码：</p>
+<p>`</p>
+<pre><code>import org.springframework.beans.factory.annotation.Qualifier;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+@Target({ElementType.FIELD, ElementType.PARAMETER,ElementType.TYPE})@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface QulifierTest {
+} `
+</code></pre><p>tips：上面的@interface是java自带的自定义的annotation用的，不是interface<br>然后直接对Bean进行@QulifierTest注解，再在要装配的Bean进行如下注解<br><code>@Autowired
+@QulifierTest</code><br>这样装配的时候就会选择用@QulifierTest标注过的Bean。</p>
+<h4 id="Bean"><a href="#Bean" class="headerlink" title="@Bean"></a>@Bean</h4><p>这个注解等价于在XML文件中的<bean>配置，方法名作为Bean的id。可以将其他Bean在构造器或者参数中传入，并且Spring在注入的时候会在上下文检查注入的Bean是否已经被生成过了，如果生成过则会去调用之前生成的Bean，并不是去重新创建一个。</bean></p>
+<h2 id="面向切面的Spring"><a href="#面向切面的Spring" class="headerlink" title="面向切面的Spring"></a>面向切面的Spring</h2><p>###</p>
+
+        </div>
+        
+        <blockquote class="post-copyright">
+    <div class="content">
+        这里写留言或版权声明：<a href="/2016/11/25/Spring实战读书笔记/" target="_blank" rel="external">http://fanjinbo.github.io/2016/11/25/Spring实战读书笔记/</a>
+    </div>
+    <footer>
+        <a href="http://fanjinbo.github.io">
+            <img src="/img/tx.png" alt="fanjinbo">
+            fanjinbo
+        </a>
+    </footer>
+</blockquote>
+        
+
+        <div class="post-footer">
+            
+
+            
+<div class="post-share-wrap">
+    <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+    <a href="javascript:;" id="share-fab" class="post-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>   
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/11/23/Java-I-O-学习总结/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Java I/O 学习总结</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+    
+<div class="duoshuo" id="comments">
+	<div class="ds-thread" data-thread-key="Spring实战读书笔记" data-title="Spring实战读书笔记" data-url="http://fanjinbo.github.io/2016/11/25/Spring实战读书笔记/"></div>
+</div>
+<script src="/js/embed.min.js?v=1.1.12"></script>
+<script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
+<script>
+var duoshuoQuery = {short_name:'fanjinbo', theme: 'none'}
+</script>
+
+
+
+
+
+</article>
+
+
+</div>
+
+  </main>
+  <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>var BLOG = { ROOT: '/' };
+BLOG.SHARE = {
+title: "Spring实战读书笔记",
+summary: document.getElementsByName('summary')[0].content,
+url: "http://fanjinbo.github.io/2016/11/25/Spring实战读书笔记/" }
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+  <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script src="/js/main.min.js?v=1.1.12"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.1.12"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -5,26 +5,38 @@
   
   
   
-  <title>No title | hhfan的博客 | 分享知识</title>
+  <title>Java I/O 学习总结 | hhfan的博客 | 分享知识</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <meta name="theme-color" content="#3F51B5">
   
   
   <meta name="keywords" content="">
-  <meta name="description" content="#Java IO 学习总结
-##Java Io">
+  <meta name="description" content="File.listFiles()源码分析public File[] listFiles() {
+    String[] ss = list();
+    if (ss == null) return null;
+    int n = ss.length;
+    File[] fs = new File[n];
+    for (int i = 0; i &amp;lt; n; i++) {">
 <meta property="og:type" content="article">
-<meta property="og:title" content="No title">
-<meta property="og:url" content="http://fanjinbo.github.io/2016/11/18/java-IO/index.html">
+<meta property="og:title" content="Java I/O 学习总结">
+<meta property="og:url" content="http://fanjinbo.github.io/2016/11/23/Java-I-O-学习总结/index.html">
 <meta property="og:site_name" content="hhfan的博客">
-<meta property="og:description" content="#Java IO 学习总结
-##Java Io">
-<meta property="og:updated_time" content="2016-11-18T15:35:11.597Z">
+<meta property="og:description" content="File.listFiles()源码分析public File[] listFiles() {
+    String[] ss = list();
+    if (ss == null) return null;
+    int n = ss.length;
+    File[] fs = new File[n];
+    for (int i = 0; i &amp;lt; n; i++) {">
+<meta property="og:updated_time" content="2016-11-25T08:01:16.854Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="No title">
-<meta name="twitter:description" content="#Java IO 学习总结
-##Java Io">
+<meta name="twitter:title" content="Java I/O 学习总结">
+<meta name="twitter:description" content="File.listFiles()源码分析public File[] listFiles() {
+    String[] ss = list();
+    if (ss == null) return null;
+    int n = ss.length;
+    File[] fs = new File[n];
+    for (int i = 0; i &amp;lt; n; i++) {">
   
     <link rel="alternative" href="/atom.xml" title="hhfan的博客" type="application/atom+xml">
   
@@ -118,7 +130,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis"></div>
+        <div class="flex-col header-title ellipsis">Java I/O 学习总结</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -140,11 +152,11 @@
 <header class="content-header post-header">
 
     <div class="container">
-        <h1 class="title"></h1>
+        <h1 class="title">Java I/O 学习总结</h1>
         <h5 class="subtitle">
             
-                <time datetime="2016-11-18T15:35:11.597Z" itemprop="datePublished" class="page-time">
-  2016-11-18
+                <time datetime="2016-11-23T09:56:24.000Z" itemprop="datePublished" class="page-time">
+  2016-11-23
 </time>
 
 
@@ -159,14 +171,21 @@
 
 <div class="container body-wrap">
     
-<article id="post-java-IO" 
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#File-listFiles-源码分析"><span class="post-toc-number">1.</span> <span class="post-toc-text">File.listFiles()源码分析</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-Java-I-O-学习总结" 
   class="post-article article-type-post" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title"></h1>
+        <h1 class="post-card-title">Java I/O 学习总结</h1>
         <div class="post-meta">
-            <time datetime="2016-11-18T15:35:11.597Z" itemprop="datePublished" class="post-time">
-  2016-11-18
+            <time datetime="2016-11-23T09:56:24.000Z" itemprop="datePublished" class="post-time">
+  2016-11-23
 </time>
 
             
@@ -174,14 +193,54 @@
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <p>#Java IO 学习总结</p>
-<p>##Java Io</p>
+            <h2 id="File-listFiles-源码分析"><a href="#File-listFiles-源码分析" class="headerlink" title="File.listFiles()源码分析"></a>File.listFiles()源码分析</h2><pre><code>public File[] listFiles() {
+    String[] ss = list();
+    if (ss == null) return null;
+    int n = ss.length;
+    File[] fs = new File[n];
+    for (int i = 0; i &lt; n; i++) {
+        fs[i] = new File(ss[i], this);
+    }
+    return fs;
+}
+
+public String[] list() {
+        SecurityManager security = System.getSecurityManager(); //获取系统安全接口
+        if (security != null) {
+            security.checkRead(path);
+            //判断线程是否有读取文件的权限,权限可以自己去用System.setSecurityManager(SecurityManager  Object)去set
+        }
+        if (isInvalid()) {
+            return null;
+        }
+        return fs.list(this);
+    }
+
+final boolean isInvalid() {
+        if (status == null) {
+            status = (this.path.indexOf(&apos;\u0000&apos;) &lt; 0) ? PathStatus.CHECKED
+                                                       : PathStatus.INVALID;
+        }
+        return status == PathStatus.INVALID;
+}
+
+public void checkRead(String file) {
+        checkPermission(new FilePermission(file,
+            SecurityConstants.FILE_READ_ACTION));
+}
+
+public abstract String[] list(File f);
+
+@Override
+public native String[] list(File f);//调用的系统原生方法，要具体去看jdk的源码或者监控dll调用，
+                                    // 反正只要明白此处使用的是操作系统原生的方法
+</code></pre><p>checkRead<br>public void checkRead(String file)<br>如果不允许调用线程读取由字符串参数指定的文件，则抛出 SecurityException。<br>此方法用 FilePermission(file,”read”) 权限调用 checkPermission。<br>如果重写此方法，那么通常应该在已重写方法将要抛出异常时调用 super.checkRead。<br>参数：<br>file - 取决于系统的文件名。<br>抛出：<br>SecurityException - 如果调用线程没有访问指定文件的权限。<br>NullPointerException - 如果 file 参数为 null。</p>
 
         </div>
         
         <blockquote class="post-copyright">
     <div class="content">
-        这里写留言或版权声明：<a href="/2016/11/18/java-IO/" target="_blank" rel="external">http://fanjinbo.github.io/2016/11/18/java-IO/</a>
+        这里写留言或版权声明：<a href="/2016/11/23/Java-I-O-学习总结/" target="_blank" rel="external">http://fanjinbo.github.io/2016/11/23/Java-I-O-学习总结/</a>
     </div>
     <footer>
         <a href="http://fanjinbo.github.io">
@@ -247,13 +306,20 @@
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2016/11/18/hello-world/" id="post-prev" class="post-nav-link">
+      <a href="/2016/11/25/Spring实战读书笔记/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">Hello World</h4>
+        <h4 class="title">Spring实战读书笔记</h4>
       </a>
     </div>
   
 
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/11/23/Callable与Future/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Callable与Future</h4>
+      </a>
+    </div>
   
 </nav>
 
@@ -261,7 +327,7 @@
             
     
 <div class="duoshuo" id="comments">
-	<div class="ds-thread" data-thread-key="java-IO" data-title="" data-url="http://fanjinbo.github.io/2016/11/18/java-IO/"></div>
+	<div class="ds-thread" data-thread-key="Java-I-O-学习总结" data-title="Java I/O 学习总结" data-url="http://fanjinbo.github.io/2016/11/23/Java-I-O-学习总结/"></div>
 </div>
 <script src="/js/embed.min.js?v=1.1.12"></script>
 <script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
@@ -284,9 +350,9 @@ var duoshuoQuery = {short_name:'fanjinbo', theme: 'none'}
 
 <script>var BLOG = { ROOT: '/' };
 BLOG.SHARE = {
-title: "No title",
+title: "Java I/O 学习总结",
 summary: document.getElementsByName('summary')[0].content,
-url: "http://fanjinbo.github.io/2016/11/18/java-IO/" }
+url: "http://fanjinbo.github.io/2016/11/23/Java-I-O-学习总结/" }
 </script>
 <div class="global-share" id="global-share">
     <div class="tit">分享到：</div>
